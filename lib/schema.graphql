@@ -1,10 +1,49 @@
+"""
+Types
+"""
 type Course {
   _id: ID!
   title: String!
   teacher: String
   description: String!
-  topic: String
+  topic: String @deprecated
   people: [Student]
+  level: Level
+}
+
+type Student implements Person {
+  _id: ID!
+  name: String!
+  email: String!
+  avatar: String
+}
+
+type Monitor implements Person {
+  _id: ID!
+  name: String!
+  email: String!
+  phone: String
+}
+
+union GenericEntity = Course | Student | Monitor
+
+"""
+Interfaces
+"""
+interface Person {
+  _id: ID!
+  name: String!
+  email: String!
+}
+
+"""
+Inputs
+"""
+input PersonInput {
+  name: String!
+  email: String!
+  avatar: String
+  phone: String
 }
 
 input CourseInput {
@@ -12,19 +51,27 @@ input CourseInput {
   teacher: String
   description: String!
   topic: String
+  level: Level
 }
 
-type Student {
-  _id: ID!
-  name: String!
-  email: String!
+"""
+Enums
+"""
+enum Level {
+  junior
+  medium
+  senior
 }
 
-input StudentInput {
-  name: String!
-  email: String!
+enum TypeKey {
+  student
+  monitor
+  course
 }
 
+"""
+Queries
+"""
 type Query {
   "Devuelve todos cursos"
   getCourses: [Course]
@@ -32,24 +79,29 @@ type Query {
   "Devuelve un curso"
   getCourse(id: ID!): Course
 
-  "return all students"
-  getStudents: [Student]
+  "return all persons"
+  getPeople: [Person]
 
-  "return a student"
-  getStudent(id: ID!): Student
+  "return a person"
+  getPerson(id: ID!): Person
+
+  "return a entity"
+  getEntity(key: TypeKey!): [GenericEntity]
 }
 
+"""
+Mutations
+"""
 type Mutation {
   "Crea un curso"
   createCourse(input: CourseInput!): Course
 
-  "Create a student"
-  createStudent(input: StudentInput!): Student
+  "Create a person"
+  createPerson(input: PersonInput!): Person
 
-  "Update a student by _id"
-  updateStudent(id: ID!, entity: StudentInput!): Student
+  "Update a person by _id"
+  updatePerson(id: ID!, entity: PersonInput!): Person
 
   "Add a person to course"
   addPeopleToCourse(courseID: ID!, personID: ID!): Course
 }
-
