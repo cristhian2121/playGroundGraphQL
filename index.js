@@ -10,6 +10,7 @@ const resolvers = require('./lib/resolvers')
 
 const app = express()
 const port = process.env.port || 3100
+const isProd = process.env.NODE_ENV === "production"
 
 // definiendo el esquema
 const typeDefs = readFileSync(
@@ -21,7 +22,7 @@ const schema = makeExecutableSchema({ typeDefs, resolvers })
 app.use('/api', gqlMiddleware({
   schema: schema,
   rootValue: resolvers,
-  graphiql: true
+  graphiql: !isProd
 }))
 
 app.listen(port, () => {
