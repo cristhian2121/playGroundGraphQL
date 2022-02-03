@@ -4,6 +4,7 @@ type Course {
   teacher: String
   description: String!
   topic: String
+  people: [Student]
 }
 
 input CourseInput {
@@ -24,7 +25,6 @@ input StudentInput {
   email: String!
 }
 
-
 type Query {
   "Devuelve todos cursos"
   getCourses: [Course]
@@ -34,10 +34,9 @@ type Query {
 
   "return all students"
   getStudents: [Student]
-  
+
   "return a student"
   getStudent(id: ID!): Student
-  
 }
 
 type Mutation {
@@ -50,5 +49,7 @@ type Mutation {
   "Update a student by _id"
   updateStudent(id: ID!, entity: StudentInput!): Student
 
+  "Add a person to course"
+  addPeopleToCourse(courseID: ID!, personID: ID!): Course
 }
 
